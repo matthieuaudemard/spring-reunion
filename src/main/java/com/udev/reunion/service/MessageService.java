@@ -17,7 +17,9 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public List<Message> getLastMessages() { return (List<Message>) messageRepository.findAll();}
+    public List<Message> getLastMessages() {
+        return  (List<Message>) messageRepository.findAllOrderByPublicationDateDesc();
+    }
 
     public Message getMessageById(Long id){ return messageRepository.findById(id).orElse(null); }
 

@@ -2,6 +2,7 @@ package com.udev.reunion.controller;
 
 import com.udev.reunion.domain.Message;
 import com.udev.reunion.domain.User;
+import com.udev.reunion.model.CommentJson;
 import com.udev.reunion.model.MessageJson;
 import com.udev.reunion.service.CommentService;
 import com.udev.reunion.service.MessageService;
@@ -34,8 +35,8 @@ public class MessageController {
         this.commentService = commentService;
     }
 
-    @GetMapping(value = "/messageCreateError" )
-    public String redirectToError(){
+    @GetMapping(value = "/messageCreateError")
+    public String redirectToError() {
         return "messageCreateError";
     }
 
@@ -56,14 +57,19 @@ public class MessageController {
     @GetMapping(value="/message/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getMessageById(ModelMap model, @PathVariable Long id, HttpServletRequest request){
 
-        if(request.getSession().getAttribute("userId") != null) {
+        String userId = (String) request.getSession().getAttribute("userId");
+        if(userId != null) {
             Message messageById = messageService.getMessageById(id);
-            if(messageById != null) {
+            CommentJson commentForm = new CommentJson();
+            commentForm.setSenderId(Long.valueOf(userId));
+            commentForm.setMessageId(id);
+            model.addAttribute("commentForm", commentForm);
+            if (messageById != null) {
                 MessageJson messageJson = Mapper.convert(messageById);
                 messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Mapper::convert).collect(toList()));
                 model.addAttribute("singleMessage", messageJson);
                 return "message";
-            }else{
+            } else {
                 return "messageError";
             }
         } else {
@@ -80,15 +86,15 @@ public class MessageController {
     @RequestMapping(value = "/create_message", method = RequestMethod.POST)
     @ResponseBody
     public RedirectView createMessage(HttpServletRequest request,
-                                      @RequestParam(value="user", required=true) String userStr,
-                                      @RequestParam(value="title", required=true) String title,
-                                      @RequestParam(value = "body", required=true) String body){
+                                      @RequestParam(value = "user", required = true) String userStr,
+                                      @RequestParam(value = "title", required = true) String title,
+                                      @RequestParam(value = "body", required = true) String body) {
 
-        if( userStr.matches("\\d+") && title.length() > 0 && title.length()<100 && body.length() > 0 && body.length() < 1000 ){
+        if (userStr.matches("\\d+") && title.length() > 0 && title.length() < 100 && body.length() > 0 && body.length() < 1000) {
             Long userLong = Long.parseLong(userStr);
             User user = this.userService.findById(userLong);
 
-            if(user != null){
+            if (user != null) {
 
                 Message message = new Message();
                 message.setSender(user);
@@ -97,19 +103,14 @@ public class MessageController {
 
                 if (this.messageService.send(message) != null) {
                     return new RedirectView("/");
-                }
-
-                else {
+                } else {
                     return new RedirectView("/messageCreateError");
                 }
-
-
-
             } else {
                 return new RedirectView("/messageCreateError");
             }
 
-        }else{
+        } else {
             return new RedirectView("/messageCreateError");
         }
     }
