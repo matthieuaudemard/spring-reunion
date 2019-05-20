@@ -183,7 +183,33 @@
             </div>
             <!-- Post /////-->
 
+            <!--- \\\\\\\Post-->
+            <div class="card gedf-card" th:each="comment: ${singleMessage.getCommentJsonList()}">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="mr-2">
+                                <img alt="" class="rounded-circle" src="https://picsum.photos/50/50" width="45">
+                            </div>
+                            <div class="ml-2">
+                                <div class="h5 m-0">@<span
+                                        th:text="${comment.getSenderLastname() + comment.getSenderFirstname()}">Field</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="text-muted h7 mb-2"><i class="fa fa-clock-o"></i><span
+                            th:text="${#dates.format(comment.getCommentDate(), 'dd-MM-yyyy HH:mm')}"> Field</span>
+                    </div>
+                    <p class="card-text" th:text="${comment.getCommentBody()}">
+                    </p>
+                </div>
+            </div>
+            <!-- Post /////-->
 
+            <!--- \\\\\\\Post-->
         </div>
         <div class="col-md-3">
             <div class="card gedf-card">

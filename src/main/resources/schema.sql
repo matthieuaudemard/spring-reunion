@@ -18,3 +18,14 @@ CREATE TABLE IF NOT EXISTS MESSAGE
     body             VARCHAR(1000),
     FOREIGN KEY (sender_id) REFERENCES USER (id),
 );
+
+CREATE TABLE IF NOT EXISTS COMMENT
+(
+    id               BIGINT IDENTITY PRIMARY KEY,
+    comment_date     DATETIME NOT NULL,
+    sender_id        BIGINT   NOT NULL,
+    message_id       BIGINT   NOT NULL,
+    body             VARCHAR(1000),
+    FOREIGN KEY (message_id) REFERENCES MESSAGE (id),
+    FOREIGN KEY (sender_id) REFERENCES USER (id),
+);

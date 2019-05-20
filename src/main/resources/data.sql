@@ -12,3 +12,7 @@ VALUES (1, {ts '2019-05-19 14:12:001.0'}, 1, 'Qu''est-ce que le Lorem Ipsum?',
 INSERT INTO MESSAGE
 VALUES (null, {ts '2019-05-20 08:30:043.0'}, 2, 'Un titre pour ajouter un peu d''authenticité au contenu',
         'You think water moves fast? You should see ice. It moves like it has a mind. Like it knows it killed the world once and got a taste for murder. After the avalanche, it took us a week to climb out. Now, I don''t know exactly when we turned on each other, but I know that seven of us survived the slide... and only five made it out. Now we took an oath, that I''m breaking now. We said we''d say it was the snow that killed the other two, but it wasn''t. Nature is lethal but it doesn''t hold a candle to man.');
+
+INSERT INTO COMMENT (id, comment_date, sender_id, message_id, body)
+VALUES (1, {ts '2019-05-19 15:20:001.0'}, 2, 1, 'Super Post!'),
+       (2, {ts '2019-05-19 15:20:001.0'}, 1, 1, 'Merci!');

@@ -3,6 +3,7 @@ package com.udev.reunion.controller;
 import com.udev.reunion.domain.Message;
 import com.udev.reunion.domain.User;
 import com.udev.reunion.model.MessageJson;
+import com.udev.reunion.service.CommentService;
 import com.udev.reunion.service.MessageService;
 import com.udev.reunion.service.UserService;
 import com.udev.reunion.util.Mapper;
@@ -24,11 +25,13 @@ public class MessageController {
 
     private final MessageService messageService;
     private final UserService userService;
+    private final CommentService commentService;
 
     @Autowired
-    public MessageController(MessageService messageService, UserService userService) {
+    public MessageController(MessageService messageService, UserService userService, CommentService commentService) {
         this.messageService = messageService;
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @GetMapping(value = "/messageCreateError" )
@@ -48,7 +51,9 @@ public class MessageController {
 
         Message messageById = messageService.getMessageById(id);
         if(messageById != null) {
-            model.addAttribute("singleMessage", Mapper.convert(messageById));
+            MessageJson messageJson = Mapper.convert(messageById);
+            messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Mapper::convert).collect(toList()));
+            model.addAttribute("singleMessage", messageJson);
             return "message";
         }else{
             return "messageError";
@@ -64,9 +69,9 @@ public class MessageController {
     @RequestMapping(value = "/create_message", method = RequestMethod.POST)
     @ResponseBody
     public RedirectView createMessage(HttpServletRequest request,
-                                @RequestParam(value="user", required=true) String userStr,
-                                @RequestParam(value="title", required=true) String title,
-                                @RequestParam(value = "body", required=true) String body){
+                                      @RequestParam(value="user", required=true) String userStr,
+                                      @RequestParam(value="title", required=true) String title,
+                                      @RequestParam(value = "body", required=true) String body){
 
         if( userStr.matches("\\d+") && title.length() > 0 && title.length()<100 && body.length() > 0 && body.length() < 1000 ){
             Long userLong = Long.parseLong(userStr);
