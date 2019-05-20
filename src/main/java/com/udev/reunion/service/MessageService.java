@@ -21,6 +21,8 @@ public class MessageService {
         return (List<Message>) messageRepository.findAll();
     }
 
+    public Message getMessageById(Long id){ return messageRepository.findById(id).orElse(null); }
+
     public Message send(Message message) {
         return messageRepository.save(message);
     }
