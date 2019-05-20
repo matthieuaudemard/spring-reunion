@@ -18,12 +18,19 @@ public class MessageService {
     }
 
     public List<Message> getLastMessages() {
-        return  (List<Message>) messageRepository.findAllOrderByPublicationDateDesc();
+        return (List<Message>) messageRepository.findAllOrderByPublicationDateDesc();
     }
 
-    public Message getMessageById(Long id){ return messageRepository.findById(id).orElse(null); }
+    public Message getMessageById(Long id) {
+        return messageRepository.findById(id).orElse(null);
+    }
+
+    public List<Message> getUserMessages(Long id) {
+        return messageRepository.findMessageBySenderId(id);
+    }
 
     public Message send(Message message) {
         return messageRepository.save(message);
     }
+
 }
