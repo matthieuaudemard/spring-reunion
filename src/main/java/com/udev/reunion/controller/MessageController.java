@@ -89,19 +89,19 @@ public class MessageController {
         if (userJsonSession != null) {
             if (title.length() > 0 && title.length() < 100 && body.length() > 0 && body.length() < 1000) {
                 User user = userService.findById(userJsonSession.getId());
-
                 if (user != null) {
                     Message message = new Message();
                     message.setSender(user);
                     message.setTitle(title);
                     message.setBody(body);
-
-                    if (this.messageService.send(message) != null) {
-                        return new RedirectView("/");
+                    message = messageService.send(message);
+                    if (message != null) {
+                        RedirectView redirectToSentMessage = new RedirectView();
+                        redirectToSentMessage.setContextRelative(true);
+                        redirectToSentMessage.setUrl("/message/" + message.getId());
+                        return redirectToSentMessage;
                     }
-                    return new RedirectView("/messageCreateError");
                 }
-                return new RedirectView("/messageCreateError");
             }
             return new RedirectView("/messageCreateError");
         }
