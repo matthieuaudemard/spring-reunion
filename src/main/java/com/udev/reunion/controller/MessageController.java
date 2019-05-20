@@ -47,6 +47,7 @@ public class MessageController {
 
         if(request.getSession().getAttribute("userId") != null) {
             model.addAttribute("messages", map(messageService.getLastMessages()));
+            model.addAttribute("login", request.getSession().getAttribute("login"));
             return "home";
         } else {
             return "login";
