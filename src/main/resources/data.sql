@@ -1,6 +1,7 @@
 INSERT INTO USER (id, firstname, lastname, login, password)
 VALUES (1, 'Matthieu', 'Audemard', 'taridev', 'matthieu'),
-       (2, 'Julien', 'Peluso', 'julien', 'julien');
+       (2, 'Julien', 'Peluso', 'julien', 'julien'),
+       (3, 'admin', 'admin', 'admin', 'admin');
 
 INSERT INTO MESSAGE (id, publication_date, sender_id, title, body)
 VALUES (1, {ts '2019-05-19 14:12:001.0'}, 1, 'Qu''est-ce que le Lorem Ipsum?',

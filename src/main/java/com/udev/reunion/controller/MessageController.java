@@ -41,22 +41,33 @@ public class MessageController {
 
 
     @GetMapping(value = {"/", "/last"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getLastMessages(ModelMap model) {
-        model.addAttribute("messages", map(messageService.getLastMessages()));
-        return "home";
+    public String getLastMessages(ModelMap model, HttpServletRequest request) {
+
+
+        if(request.getSession().getAttribute("userId") != null) {
+            model.addAttribute("messages", map(messageService.getLastMessages()));
+            return "home";
+        } else {
+            return "login";
+        }
+
     }
 
     @GetMapping(value="/message/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getMessageById(ModelMap model, @PathVariable Long id){
+    public String getMessageById(ModelMap model, @PathVariable Long id, HttpServletRequest request){
 
-        Message messageById = messageService.getMessageById(id);
-        if(messageById != null) {
-            MessageJson messageJson = Mapper.convert(messageById);
-            messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Mapper::convert).collect(toList()));
-            model.addAttribute("singleMessage", messageJson);
-            return "message";
-        }else{
-            return "messageError";
+        if(request.getSession().getAttribute("userId") != null) {
+            Message messageById = messageService.getMessageById(id);
+            if(messageById != null) {
+                MessageJson messageJson = Mapper.convert(messageById);
+                messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Mapper::convert).collect(toList()));
+                model.addAttribute("singleMessage", messageJson);
+                return "message";
+            }else{
+                return "messageError";
+            }
+        } else {
+            return "login";
         }
     }
 
@@ -101,11 +112,5 @@ public class MessageController {
         }else{
             return new RedirectView("/messageCreateError");
         }
-
-
-
     }
-
-
-
 }
