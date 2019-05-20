@@ -4,10 +4,11 @@ import com.udev.reunion.domain.Message;
 import com.udev.reunion.domain.User;
 import com.udev.reunion.model.CommentJson;
 import com.udev.reunion.model.MessageJson;
+import com.udev.reunion.model.UserJson;
 import com.udev.reunion.service.CommentService;
 import com.udev.reunion.service.MessageService;
 import com.udev.reunion.service.UserService;
-import com.udev.reunion.util.Mapper;
+import com.udev.reunion.util.Convertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -43,11 +44,8 @@ public class MessageController {
 
     @GetMapping(value = {"/", "/last"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getLastMessages(ModelMap model, HttpServletRequest request) {
-
-
-        if(request.getSession().getAttribute("userId") != null) {
+        if (request.getSession().getAttribute("user") != null) {
             model.addAttribute("messages", map(messageService.getLastMessages()));
-            model.addAttribute("login", request.getSession().getAttribute("login"));
             return "home";
         } else {
             return "login";
@@ -55,46 +53,44 @@ public class MessageController {
 
     }
 
-    @GetMapping(value="/message/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getMessageById(ModelMap model, @PathVariable Long id, HttpServletRequest request){
-
-        String userId = (String) request.getSession().getAttribute("userId");
-        if(userId != null) {
+    @GetMapping(value = "/message/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getMessageById(ModelMap model, @PathVariable Long id, HttpServletRequest request) {
+        UserJson user = (UserJson) request.getSession().getAttribute("user");
+        if (user != null) {
             Message messageById = messageService.getMessageById(id);
             CommentJson commentForm = new CommentJson();
-            commentForm.setSenderId(Long.valueOf(userId));
+            commentForm.setSender(user);
             commentForm.setMessageId(id);
             model.addAttribute("commentForm", commentForm);
             if (messageById != null) {
-                MessageJson messageJson = Mapper.convert(messageById);
-                messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Mapper::convert).collect(toList()));
+                MessageJson messageJson = Convertor.convert(messageById);
+                messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Convertor::convert).collect(toList()));
                 model.addAttribute("singleMessage", messageJson);
                 return "message";
             } else {
                 return "messageError";
             }
-        } else {
-            return "login";
         }
+        return "login";
     }
 
     private List<MessageJson> map(List<Message> messages) {
         return messages.stream()
-                .map(Mapper::convert)
+                .map(Convertor::convert)
                 .collect(toList());
     }
 
-    @RequestMapping(value = "/create_message", method = RequestMethod.POST)
+    @PostMapping(value = "/create_message")
     @ResponseBody
     public RedirectView createMessage(HttpServletRequest request,
-                                      @RequestParam(value = "title", required = true) String title,
-                                      @RequestParam(value = "body", required = true) String body) {
-        if(request.getSession().getAttribute("userId") != null){
+                                      @RequestParam(value = "title") String title,
+                                      @RequestParam(value = "body") String body) {
+        UserJson userJsonSession = (UserJson) request.getSession().getAttribute("user");
+        if (userJsonSession != null) {
             if (title.length() > 0 && title.length() < 100 && body.length() > 0 && body.length() < 1000) {
-                User user = this.userService.findById( Long.parseLong(String.valueOf(request.getSession().getAttribute("userId"))) );
+                User user = userService.findById(userJsonSession.getId());
 
                 if (user != null) {
-
                     Message message = new Message();
                     message.setSender(user);
                     message.setTitle(title);
@@ -102,23 +98,15 @@ public class MessageController {
 
                     if (this.messageService.send(message) != null) {
                         return new RedirectView("/");
-                    } else {
-                        return new RedirectView("/messageCreateError");
                     }
-                } else {
                     return new RedirectView("/messageCreateError");
                 }
-
-            } else {
                 return new RedirectView("/messageCreateError");
             }
-        } else {
-            return new RedirectView("/");
+            return new RedirectView("/messageCreateError");
         }
+        return new RedirectView("/");
     }
-
-
-
 
 
 }

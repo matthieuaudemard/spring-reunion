@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Re-union</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" id="bootstrap-css" rel="stylesheet">
@@ -25,11 +25,10 @@
     <script crossorigin="anonymous"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <link href="../style.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-light bg-white">
-    <a class="navbar-brand" href="#">Re-union</a>
+    <a class="navbar-brand" th:href="@{/}">Re-union</a>
     <form class="form-inline">
         <div class="input-group">
             <input aria-describedby="button-addon2" aria-label="Recipient's username" class="form-control"
@@ -41,7 +40,7 @@
             </div>
         </div>
     </form>
-    <form method="get" action="/logout">
+    <form method="get" th:action="@{/logout}">
         <button type="submit" class="btn btn-danger">Log Out</button>
     </form>
 </nav>
@@ -52,33 +51,26 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <div class="h5">@LeeCross</div>
-                    <div class="h7 text-muted">Fullname : Miracles Lee Cross</div>
-                    <div class="h7">Developer of web applications, JavaScript, PHP, Java, Python, Ruby, Java,
-                        Node.js,
-                        etc.
+                    <div class="h5" th:text="'@' + ${session.user.getLogin()}"></div>
+                    <div class="mr-2 text-center">
+                        <img alt="" class="rounded-circle shadow p-1 mb-2 bg-white rounded"
+                             src="https://picsum.photos/200/200" width="200">
                     </div>
+                    <br>
+                    <div class="h7 text-muted"
+                         th:text="${session.user.getFirstname() + ' ' + session.user.getLastname()}">Fullname :
+                    </div>
+                    <div class="h7" th:text="${session.user.getAbout()}"></div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="h6 text-muted">Followers</div>
-                        <div class="h5">5.2342</div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="h6 text-muted">Following</div>
-                        <div class="h5">6758</div>
-                    </li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
             </div>
         </div>
         <div class="col-md-6 gedf-main">
 
-
             <h1><span th:text="${user.getFirstname() +' '+ user.getLastname() + '(@'+ user.getLogin()+')'}"></span></h1>
-            <p>description</p>
+            <p class="text-muted small" th:text="${user.getAbout()}"></p>
 
 
+            <p>Last publications sent by <span th:text="${user.getFirstname() +' '+ user.getLastname()}"></span> :</p>
             <!--- \\\\\\\Post-->
 
             <div class="card gedf-card" th:each="message: ${messages}">
@@ -89,9 +81,10 @@
                                 <img alt="" class="rounded-circle" src="https://picsum.photos/50/50" width="45">
                             </div>
                             <div class="ml-2">
-                                <div class="h5 m-0">@<span
-                                        th:text="${message.getSenderLastname() + message.getSenderFirstname()}">Field</span>
+                                <div class="h5 m-0"
+                                     th:text="'@' + ${message.getSender().getLastname() + message.getSender().getFirstname()}">
                                 </div>
+                                <p class="text-muted small" th:text="${message.getSender().getAbout()}"></p>
                             </div>
                         </div>
                     </div>

@@ -7,18 +7,16 @@ import com.udev.reunion.model.CommentJson;
 import com.udev.reunion.model.MessageJson;
 import com.udev.reunion.model.UserJson;
 
-public class Mapper {
+public class Convertor {
 
-    private Mapper() {
-        // Empeche la création d'une instance de la classe Mapper
+    private Convertor() {
+        // Empeche la création d'une instance de la classe Convertor
     }
 
     public static MessageJson convert(Message message) {
         final User sender = message.getSender();
         MessageJson json = new MessageJson();
-        json.setSenderId(sender.getId());
-        json.setSenderFirstname(sender.getFirstname());
-        json.setSenderLastname(sender.getLastname());
+        json.setSender(Convertor.convert(sender));
         json.setMessageId(message.getId());
         json.setMessageTitle(message.getTitle());
         json.setMessageBody(message.getBody());
@@ -30,9 +28,7 @@ public class Mapper {
         final User sender = comment.getSender();
         final Message message = comment.getMessage();
         CommentJson json = new CommentJson();
-        json.setSenderId(sender.getId());
-        json.setSenderFirstname(sender.getFirstname());
-        json.setSenderLastname(sender.getLastname());
+        json.setSender(Convertor.convert(sender));
         json.setMessageId(message.getId());
         json.setCommentId(comment.getId());
         json.setCommentBody(comment.getBody());
@@ -46,6 +42,7 @@ public class Mapper {
         json.setLogin(user.getLogin());
         json.setFirstname(user.getFirstname());
         json.setLastname(user.getLastname());
+        json.setAbout(user.getAbout());
         return json;
     }
 

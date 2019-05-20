@@ -7,9 +7,7 @@ import java.util.Date;
 @Data
 public class CommentJson {
 
-    private Long senderId;
-    private String senderFirstname;
-    private String senderLastname;
+    private UserJson sender;
     private Long messageId;
     private Long commentId;
     private String commentBody;

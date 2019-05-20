@@ -8,9 +8,7 @@ import java.util.List;
 @Data
 public class MessageJson {
 
-    private Long senderId;
-    private String senderFirstname;
-    private String senderLastname;
+    private UserJson sender;
     private Long messageId;
     private String messageTitle;
     private String messageBody;

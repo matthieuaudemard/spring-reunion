@@ -1,24 +1,19 @@
 package com.udev.reunion.model;
 
-import com.udev.reunion.domain.User;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class UserJson {
+public class UserJson implements Serializable {
 
     private Long id;
     private String login;
     private String firstname;
     private String lastname;
+    private String about;
 
     public UserJson() {
         // Constructeur par défaut
-    }
-
-    public UserJson(User user) {
-        setId(user.getId());
-        setLogin(user.getLogin());
-        setFirstname(user.getFirstname());
-        setLastname(user.getLastname());
     }
 }

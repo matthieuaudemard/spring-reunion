@@ -6,7 +6,7 @@ import com.udev.reunion.model.MessageJson;
 import com.udev.reunion.model.UserJson;
 import com.udev.reunion.service.MessageService;
 import com.udev.reunion.service.UserService;
-import com.udev.reunion.util.Mapper;
+import com.udev.reunion.util.Convertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -35,12 +35,12 @@ public class UserController {
 
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getUserById(HttpServletRequest request, ModelMap model, @PathVariable Long userId) {
-        String sessionId = (String) request.getSession().getAttribute("userId");
-        if (sessionId != null) {
-            User sessionUser = userService.findById(Long.parseLong(sessionId));
+        UserJson userSessionJson = (UserJson) request.getSession().getAttribute("user");
+        if (userSessionJson != null) {
+            User sessionUser = userService.findById(userSessionJson.getId());
             User userById = userService.findById(userId);
             if (sessionUser != null) {
-                UserJson userJson = Mapper.convert(userById);
+                UserJson userJson = Convertor.convert(userById);
                 model.addAttribute("user", userJson);
                 model.addAttribute("messages", map(messageService.getUserMessages(userId)));
                 return "user";
@@ -51,7 +51,7 @@ public class UserController {
 
     private List<MessageJson> map(List<Message> messages) {
         return messages.stream()
-                .map(Mapper::convert)
+                .map(Convertor::convert)
                 .collect(toList());
     }
 }

@@ -19,7 +19,11 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User findByLogin(String login){return this.userRepository.findByLogin(login).orElse(null);}
+    public User findByLogin(String login) {
+        return userRepository.findByLogin(login).orElse(null);
+    }
 
-    public User send(User user){ return userRepository.save(user);}
+    public User send(User user) {
+        return userRepository.save(user);
+    }
 }
