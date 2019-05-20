@@ -86,32 +86,38 @@ public class MessageController {
     @RequestMapping(value = "/create_message", method = RequestMethod.POST)
     @ResponseBody
     public RedirectView createMessage(HttpServletRequest request,
-                                      @RequestParam(value = "user", required = true) String userStr,
                                       @RequestParam(value = "title", required = true) String title,
                                       @RequestParam(value = "body", required = true) String body) {
+        if(request.getSession().getAttribute("userId") != null){
+            if (title.length() > 0 && title.length() < 100 && body.length() > 0 && body.length() < 1000) {
+                User user = this.userService.findById( Long.parseLong(String.valueOf(request.getSession().getAttribute("userId"))) );
 
-        if (userStr.matches("\\d+") && title.length() > 0 && title.length() < 100 && body.length() > 0 && body.length() < 1000) {
-            Long userLong = Long.parseLong(userStr);
-            User user = this.userService.findById(userLong);
+                if (user != null) {
 
-            if (user != null) {
+                    Message message = new Message();
+                    message.setSender(user);
+                    message.setTitle(title);
+                    message.setBody(body);
 
-                Message message = new Message();
-                message.setSender(user);
-                message.setTitle(title);
-                message.setBody(body);
-
-                if (this.messageService.send(message) != null) {
-                    return new RedirectView("/");
+                    if (this.messageService.send(message) != null) {
+                        return new RedirectView("/");
+                    } else {
+                        return new RedirectView("/messageCreateError");
+                    }
                 } else {
                     return new RedirectView("/messageCreateError");
                 }
+
             } else {
                 return new RedirectView("/messageCreateError");
             }
-
         } else {
-            return new RedirectView("/messageCreateError");
+            return new RedirectView("/");
         }
     }
+
+
+
+
+
 }
