@@ -21,6 +21,10 @@ body {
     }
 }
 
+#messageBody{
+    margin-top: 15px;
+}
+
 /**Reset Bootstrap*/
 .dropdown-toggle::after {
     content: none;

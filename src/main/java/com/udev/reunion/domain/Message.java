@@ -24,7 +24,7 @@ public class Message {
     @Column(nullable = false)
     private String body;
 
-    @Column(name = "publication_date", updatable = false, nullable = false)
+    @Column(name = "publication_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date publicationDate = new Date();
 }

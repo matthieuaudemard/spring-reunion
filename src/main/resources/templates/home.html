@@ -82,51 +82,31 @@
                                id="posts-tab" role="tab">Make
                                 a publication</a>
                         </li>
-                        <li class="nav-item">
-                            <a aria-controls="images" aria-selected="false" class="nav-link" data-toggle="tab"
-                               href="#images"
-                               id="images-tab" role="tab">Images</a>
-                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
-                    <div class="tab-content" id="myTabContent">
-                        <div aria-labelledby="posts-tab" class="tab-pane fade show active" id="posts"
-                             role="tabpanel">
-                            <div class="form-group">
-                                <label class="sr-only" for="message">post</label>
-                                <textarea class="form-control" id="message" placeholder="What are you thinking?"
-                                          rows="3"></textarea>
-                            </div>
 
+                    <form method="post" action="/create_message">
+
+                        <div class="form-group">
+
+                            <input type="hidden" name="user" value="1">
+
+                            <label class="sr-only">title</label>
+                            <input class="form-control" type="text" minlength="1" maxlength="100" name="title" placeholder="Title">
+
+                            <label class="sr-only">post</label>
+                            <textarea class="form-control" minlength="1" maxlength="1000"  name="body" placeholder="What are you thinking?"
+                                              rows="3" id="messageBody"></textarea>
                         </div>
-                        <div aria-labelledby="images-tab" class="tab-pane fade" id="images" role="tabpanel">
-                            <div class="form-group">
-                                <div class="custom-file">
-                                    <input class="custom-file-input" id="customFile" type="file">
-                                    <label class="custom-file-label" for="customFile">Upload image</label>
-                                </div>
-                            </div>
-                            <div class="py-4"></div>
-                        </div>
-                    </div>
-                    <div class="btn-toolbar justify-content-between">
+
+
                         <div class="btn-group">
                             <button class="btn btn-primary" type="submit">share</button>
                         </div>
-                        <div class="btn-group">
-                            <button aria-expanded="false" aria-haspopup="true" class="btn btn-link dropdown-toggle"
-                                    data-toggle="dropdown" id="btnGroupDrop1"
-                                    type="button">
-                                <i class="fa fa-globe"></i>
-                            </button>
-                            <div aria-labelledby="btnGroupDrop1" class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#"><i class="fa fa-globe"></i> Public</a>
-                                <a class="dropdown-item" href="#"><i class="fa fa-users"></i> Friends</a>
-                                <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Just me</a>
-                            </div>
-                        </div>
-                    </div>
+
+                    </form>
+
                 </div>
             </div>
             <!-- Post /////-->

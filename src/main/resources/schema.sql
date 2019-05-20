@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS USER
 
 CREATE TABLE IF NOT EXISTS MESSAGE
 (
-    id               BIGINT IDENTITY PRIMARY KEY,
+    id               BIGINT IDENTITY PRIMARY KEY AUTO_INCREMENT,
     publication_date DATETIME NOT NULL,
     sender_id        BIGINT   NOT NULL,
     title            VARCHAR(100),
