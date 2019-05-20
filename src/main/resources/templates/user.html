@@ -51,7 +51,10 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <div class="h5" th:text="'@' + ${session.user.getLogin()}"></div>
+                    <div class="h5">
+                        <a th:href="@{/user/{id}(id=${session.user.getId()})}"
+                           th:text="'@' + ${session.user.getLogin()}"></a>
+                    </div>
                     <div class="mr-2 text-center">
                         <img alt="" class="rounded-circle shadow p-1 mb-2 bg-white rounded"
                              src="https://picsum.photos/200/200" width="200">

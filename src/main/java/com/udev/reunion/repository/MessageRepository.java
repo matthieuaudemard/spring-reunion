@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface MessageRepository extends CrudRepository<Message, Long> {
-    @Query("SELECT m FROM Message m WHERE id = :i")
+    @Query("SELECT m FROM Message m WHERE m.sender.id = :i")
     List<Message> findMessageBySenderId(long i);
 
     @Query("SELECT m FROM Message m ORDER BY publication_date DESC")
