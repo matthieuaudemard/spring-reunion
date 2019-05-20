@@ -20,4 +20,6 @@ public class UserService {
     }
 
     public User findByLogin(String login){return this.userRepository.findByLogin(login).orElse(null);}
+
+    public User send(User user){ return userRepository.save(user);}
 }

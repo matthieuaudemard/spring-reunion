@@ -59,6 +59,34 @@ public class LoginController {
     }
 
 
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @ResponseBody
+    public RedirectView register(HttpServletRequest request,
+                                 @RequestParam(value = "login", required = true) String login,
+                                 @RequestParam(value = "fname", required = true) String fname,
+                                 @RequestParam(value = "lname", required = true) String lname,
+                                 @RequestParam(value = "password", required = true) String password
+                                 ){
+        if(!login.isEmpty() && login.length() < 50 && !fname.isEmpty() && fname.length() < 50 && !lname.isEmpty() && lname.length() < 50 && !password.isEmpty()  && password.length() < 50){
+            User user = new User();
+            user.setLogin(login);
+            user.setFirstname(fname);
+            user.setLastname(lname);
+            user.setPassword(password);
+
+            if(this.userService.send(user)!=null){
+                User newUser = userService.findByLogin(login);
+                request.getSession().setAttribute("userId", newUser.getId().toString());
+                request.getSession().setAttribute("userFirstName", newUser.getFirstname().toString());
+                request.getSession().setAttribute("userLastName", newUser.getLastname().toString());
+            }
+
+        }
+
+        return new RedirectView("/");
+    }
+
+
 
 
 
