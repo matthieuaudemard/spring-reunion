@@ -121,6 +121,7 @@
                                 <div class="h5 m-0">
                                     <a th:href="@{/user/{id}(id=${message.getSender().getId()})}"
                                        th:text="'@' + ${message.getSender().getLastname() + message.getSender().getFirstname()}"></a>
+                                    <a style="margin-left: 150px;" th:href="@{/delete/{id}(id=${message.getMessageId()})}"><i class="fa fa-trash"></i></a>
                                 </div>
                                 <p class="text-muted small" th:text="${message.getSender().getAbout()}"></p>
                             </div>

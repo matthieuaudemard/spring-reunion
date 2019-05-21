@@ -33,4 +33,6 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
+    public void delete(Long id){  messageRepository.delete(this.getMessageById(id));}
+
 }

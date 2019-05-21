@@ -74,6 +74,15 @@ public class MessageController {
         return "login";
     }
 
+    @GetMapping(value = "/delete/{id}")
+    public RedirectView deleteMessage(HttpServletRequest request, @PathVariable Long id){
+        UserJson user = (UserJson) request.getSession().getAttribute("user");
+        if(user != null){
+            this.messageService.delete(id);
+        }
+        return new RedirectView("/");
+    }
+
     private List<MessageJson> map(List<Message> messages) {
         return messages.stream()
                 .map(Convertor::convert)
