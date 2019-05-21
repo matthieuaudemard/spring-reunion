@@ -1,6 +1,6 @@
 INSERT INTO USER (id, firstname, lastname, login, password, about)
-VALUES (1, 'Matthieu', 'Audemard', 'taridev', 'matthieu', 'Public Sector Junior Consultant at CGI'),
-       (2, 'Julien', 'Peluso', 'JuJu', 'julien', 'Finance Sector Junior Consultant at CGI'),
+VALUES (1, 'Matthieu', 'Audemard', 'matthieu.audemard', 'matthieu', 'Public Sector Junior Consultant at CGI'),
+       (2, 'Julien', 'Peluso', 'PJulien', 'julien', 'Finance Sector Junior Consultant at CGI'),
        (3, 'admin', 'admin', 'admin', 'admin',
         'Developer of web applications, JavaScript, PHP, Java, Python, Ruby, Java, Node.js, etc.'),
        (4, 'Serge', 'Godin', 'SGodin', 'password', 'Founder and Executive Chairman of the CGI Board');
