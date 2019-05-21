@@ -14,8 +14,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -47,6 +49,18 @@ public class UserController {
             }
         }
         return "login";
+    }
+
+    @GetMapping(value = "/user/search/{pattern}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<UserJson> userSearch(@PathVariable String pattern, HttpServletRequest request) {
+        if (request.getSession().getAttribute("user") != null) {
+            return userService.findByPattern(pattern)
+                    .stream()
+                    .map(Convertor::convert)
+                    .collect(toList());
+        }
+        return Collections.emptyList();
     }
 
     private List<MessageJson> map(List<Message> messages) {
