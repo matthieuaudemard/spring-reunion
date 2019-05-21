@@ -1,9 +1,9 @@
 INSERT INTO USER (id, firstname, lastname, login, password, about)
-VALUES (1, 'Matthieu', 'Audemard', 'taridev', 'matthieu', 'Public Sector Consultant at CGI'),
-       (2, 'Julien', 'Peluso', 'julien', 'julien', null),
+VALUES (1, 'Matthieu', 'Audemard', 'taridev', 'matthieu', 'Public Sector Junior Consultant at CGI'),
+       (2, 'Julien', 'Peluso', 'JuJu', 'julien', 'Finance Sector Junior Consultant at CGI'),
        (3, 'admin', 'admin', 'admin', 'admin',
         'Developer of web applications, JavaScript, PHP, Java, Python, Ruby, Java, Node.js, etc.'),
-       (4, 'Serge', 'Godin', 'SGodin', 'password', 'Founder and Executive Chairman of the Board');
+       (4, 'Serge', 'Godin', 'SGodin', 'password', 'Founder and Executive Chairman of the CGI Board');
 
 INSERT INTO MESSAGE (id, publication_date, sender_id, title, body)
 VALUES (1, {ts '2019-05-19 14:12:001.0'}, 1, 'Qu''est-ce que le Lorem Ipsum?',
