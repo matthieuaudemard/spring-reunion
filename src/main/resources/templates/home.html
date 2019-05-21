@@ -21,13 +21,10 @@
 <body>
 <nav class="navbar navbar-light bg-white">
     <a class="navbar-brand" th:href="@{/}">Re-union</a>
-    <form class="form-inline">
+    <form class="form-inline" autocomplete="off">
         <div class="input-group">
             <input id="search" aria-describedby="button-addon2" aria-label="Recipient's username" class="form-control"
                    type="text">
-            <ul style="display: none;" id="userFoundList">
-
-            </ul>
             <div class="input-group-append">
                 <button class="btn btn-outline-primary" id="button-addon2" type="button">
                     <i class="fa fa-search"></i>
@@ -35,6 +32,10 @@
             </div>
         </div>
     </form>
+    <ul id="userFoundList">
+
+
+    </ul>
     <form method="get" th:action="@{/logout}">
         <button type="submit" class="btn btn-danger">Log Out</button>
     </form>
@@ -174,18 +175,40 @@
         $(document).ready(function () {
             $("#search").on("keyup", function () {
                 var matchvalue = $(this).val();
+                var cList = $('ul#userFoundList');
+                cList.empty();
+                cList.css("display", "none");
+                if (matchvalue.length <= 2) {
+                    exit();
+                }
                 $.ajax({
                     url: '/user/search/' + matchvalue,
                     type: 'get'
                 }).done(function (userList) {
+                    var cList = $('ul#userFoundList');
+                    cList.empty();
+                    if (Object.keys(userList).length == 0) {
+                        cList.css("display", "none");
+                    } else {
+                        cList.css("display", "block");
+                    }
                     userList.forEach(function (user) {
-                        console.log(user.login);
+                        console.log('user :' + user.id);
+                        cList.append('<li style="background: white; display: block;"><a href="/user/' + user.id + '">' + user.lastname + ' ' + user.firstname + '(@' + user.login + ')' + '</a></li>');
+
                     });
-                    $("#userFoundList").append(html);
-                }).fail(function () {
-                    console.log('Failed');
                 });
+            }).fail(function () {
+                var cList = $('ul#userFoundList');
+                cList.empty();
+                cList.css("display", "none");
             });
+            $("#search").on("keydown", function () {
+                var cList = $('ul#userFoundList');
+                cList.empty();
+                cList.css("display", "none");
+                console.log("down");
+            })
         });
 
         /*]]>*/

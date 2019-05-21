@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
 <head>
     <meta charset="UTF-8">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -22,8 +22,10 @@
 
         <!-- Login Form -->
         <form method="post" action="/login">
-            <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" minlength="1" maxlength="49">
-            <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" minlength="1" maxlength="49">
+            <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" minlength="1"
+                   maxlength="49">
+            <input type="password" id="password" class="fadeIn third" name="password" placeholder="password"
+                   minlength="1" maxlength="49">
             <input type="submit" class="fadeIn fourth" value="Log In">
         </form>
 
@@ -46,10 +48,14 @@
 
         <!-- Login Form -->
         <form method="post" action="/register">
-            <input type="text" id="login2" class="fadeIn second" name="login" placeholder="login" minlength="1" maxlength="49">
-            <input type="text" id="fname" class="fadeIn second" name="fname" placeholder="first name" minlength="1" maxlength="49">
-            <input type="text" id="lname" class="fadeIn second" name="lname" placeholder="last name" minlength="1" maxlength="49">
-            <input type="password" id="password2" class="fadeIn third" name="password" placeholder="password" minlength="1" maxlength="49">
+            <input type="text" id="login2" class="fadeIn second" name="login" placeholder="login" minlength="1"
+                   maxlength="49">
+            <input type="text" id="fname" class="fadeIn second" name="fname" placeholder="first name" minlength="1"
+                   maxlength="49">
+            <input type="text" id="lname" class="fadeIn second" name="lname" placeholder="last name" minlength="1"
+                   maxlength="49">
+            <input type="password" id="password2" class="fadeIn third" name="password" placeholder="password"
+                   minlength="1" maxlength="49">
             <input type="submit" class="fadeIn fourth" value="Create">
         </form>
 
