@@ -14,7 +14,6 @@
     <!-- Post /////-->
 
     <div class="card-body">
-
         <form method="post" th:action="@{/comment/add}" th:object="${commentForm}">
             <div class="form-group">
                 <input type="hidden" th:field="*{messageId}">
@@ -27,33 +26,11 @@
                 <button class="btn btn-primary" type="submit">send</button>
             </div>
         </form>
-
     </div>
 
     <!--- \\\\\\\Post-->
     <div class="card gedf-card" th:each="comment: ${message.getCommentJsonList()}">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="mr-2">
-                        <img alt="" class="rounded-circle" src="https://picsum.photos/50/50" width="45">
-                    </div>
-                    <div class="ml-2">
-                        <div class="h5 m-0"><a th:href="@{/user/{id}(id=${comment.getSender().getId()})}"
-                                               th:text="'@' + ${comment.getSender().getLastname() + comment.getSender().getFirstname()}"></a>
-                        </div>
-                        <p class="text-muted small" th:text="${comment.getSender().getAbout()}"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="text-muted h7 mb-2"><i class="fa fa-clock-o"></i><span
-                    th:text="${#dates.format(comment.getCommentDate(), 'dd-MM-yyyy HH:mm')}"> Field</span>
-            </div>
-            <p class="card-text" th:text="${comment.getCommentBody()}">
-            </p>
-        </div>
+        <div th:replace="fragments/comments :: section"></div>
     </div>
     <!-- Post /////-->
 </div>
