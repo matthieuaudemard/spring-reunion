@@ -1,12 +1,13 @@
 package com.udev.reunion.controller;
 
 import com.udev.reunion.domain.User;
+import com.udev.reunion.model.UserJson;
 import com.udev.reunion.service.UserService;
 import com.udev.reunion.util.Convertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,37 +23,39 @@ public class LoginController {
     }
 
     @PostMapping(value = "/login")
-    @ResponseBody
-    public RedirectView login(HttpServletRequest request,
-                              @RequestParam(value = "login") String login,
-                              @RequestParam(value = "password") String password) {
-        if (!login.isEmpty() && !password.isEmpty()) {
-            User user = userService.findByLogin(login);
+    public String loginSubmit(HttpServletRequest request, @RequestParam(value = "password") String password, @ModelAttribute UserJson userJson) {
+        if (!userJson.getLogin().isEmpty() && !password.isEmpty()) {
+            User user = userService.findByLogin(userJson.getLogin());
             if (user != null && user.getPassword().equals(password)) {
                 request.getSession().setAttribute("user", Convertor.convert(user));
+                return "redirect:/";
             }
         }
+        return "redirect:/login";
+    }
 
-        return new RedirectView("/");
+    @GetMapping(value = "/login")
+    public String login(Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("user") != null) {
+            return "redirect:/";
+        }
+        model.addAttribute("userForm", new UserJson());
+        return "login";
     }
 
     @GetMapping(value = "/logout")
-    public RedirectView logout(HttpServletRequest request) {
-        if (request.getSession().getAttribute("user") != null) {
-            request.getSession().removeAttribute("user");
-        }
-        return new RedirectView("/");
+    public String logout(HttpServletRequest request) {
+        request.getSession().removeAttribute("user");
+        return "redirect:/login";
     }
 
 
     @PostMapping(value = "/register")
-    @ResponseBody
-    public RedirectView register(HttpServletRequest request,
-                                 @RequestParam(value = "login") String login,
-                                 @RequestParam(value = "fname") String fname,
-                                 @RequestParam(value = "lname") String lname,
-                                 @RequestParam(value = "password") String password
-    ) {
+    public String registerSubmit(HttpServletRequest request, @ModelAttribute UserJson userJson,
+                                 @RequestParam(value = "password") String password) {
+        String login = userJson.getLogin();
+        String fname = userJson.getFirstname();
+        String lname = userJson.getLastname();
         if (!login.isEmpty() && login.length() < 50 &&
                 !fname.isEmpty() && fname.length() < 50 &&
                 !lname.isEmpty() && lname.length() < 50 &&
@@ -63,12 +66,14 @@ public class LoginController {
             user.setLastname(lname);
             user.setPassword(password);
 
-            user = userService.send(user);
-            if (user != null) {
-                request.getSession().setAttribute("user", Convertor.convert(user));
+            try {
+                request.getSession().setAttribute("user", Convertor.convert(userService.send(user)));
+                return "redirect:/";
+            } catch (Exception e) {
+                // ne rien faire
             }
         }
-        return new RedirectView("/");
+        return "redirect:/login";
     }
 
 

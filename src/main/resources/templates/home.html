@@ -19,15 +19,15 @@
             </ul>
         </div>
         <div class="card-body">
-            <form method="post" th:action="@{/create_message}">
+            <form method="post" th:action="@{/create_message}" th:object="${messageForm}">
                 <div class="form-group">
                     <label class="sr-only">title</label>
                     <input class="form-control" type="text" minlength="1" maxlength="100" name="title"
-                           placeholder="Title">
+                           placeholder="Title" th:field="*{messageTitle}">
                     <label class="sr-only">post</label>
                     <textarea class="form-control" minlength="1" maxlength="1000" name="body"
-                              placeholder="What are you thinking?"
-                              rows="3" id="messageBody"></textarea>
+                              placeholder="What are you thinking?" th:field="*{messageBody}"
+                              rows=" 3" id="messageBody"></textarea>
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-primary" type="submit">share</button>

@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -44,11 +43,15 @@ public class MessageController {
 
     @GetMapping(value = {"/", "/last"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getLastMessages(ModelMap model, HttpServletRequest request) {
-        if (request.getSession().getAttribute("user") != null) {
+        UserJson user = (UserJson) request.getSession().getAttribute("user");
+        if (user != null) {
+            MessageJson messageForm = new MessageJson();
+            messageForm.setSender(user);
+            model.addAttribute("messageForm", messageForm);
             model.addAttribute("messages", map(messageService.getLastMessages()));
             return "home";
         } else {
-            return "login";
+            return "redirect:/login";
         }
 
     }
@@ -64,23 +67,28 @@ public class MessageController {
             model.addAttribute("commentForm", commentForm);
             if (messageById != null) {
                 MessageJson messageJson = Convertor.convert(messageById);
-                messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Convertor::convert).collect(toList()));
+                messageJson.setCommentJsonList(
+                        commentService.getCommentByMessageId(id)
+                                .stream()
+                                .map(Convertor::convert)
+                                .collect(toList())
+                );
                 model.addAttribute("message", messageJson);
                 return "message";
             } else {
                 return "messageError";
             }
         }
-        return "login";
+        return "redirect:/login";
     }
 
     @GetMapping(value = "/delete/{id}")
-    public RedirectView deleteMessage(HttpServletRequest request, @PathVariable Long id) {
+    public String deleteMessage(HttpServletRequest request, @PathVariable Long id) {
         UserJson user = (UserJson) request.getSession().getAttribute("user");
         if (user != null) {
             this.messageService.delete(id);
         }
-        return new RedirectView("/");
+        return "redirect:/";
     }
 
     private List<MessageJson> map(List<Message> messages) {
@@ -90,32 +98,25 @@ public class MessageController {
     }
 
     @PostMapping(value = "/create_message")
-    @ResponseBody
-    public RedirectView createMessage(HttpServletRequest request,
-                                      @RequestParam(value = "title") String title,
-                                      @RequestParam(value = "body") String body) {
+    public String messageSubmit(HttpServletRequest request, @ModelAttribute MessageJson messageJson) {
         UserJson userJsonSession = (UserJson) request.getSession().getAttribute("user");
         if (userJsonSession != null) {
-            if (title.length() > 0 && title.length() < 100 && body.length() > 0 && body.length() < 1000) {
+            String messageTitle = messageJson.getMessageTitle();
+            String messageBody = messageJson.getMessageBody();
+            if (messageTitle.length() > 0 && messageTitle.length() < 100 &&
+                    messageBody.length() > 0 && messageBody.length() < 1000) {
                 User user = userService.findById(userJsonSession.getId());
                 if (user != null) {
                     Message message = new Message();
                     message.setSender(user);
-                    message.setTitle(title);
-                    message.setBody(body);
+                    message.setTitle(messageTitle);
+                    message.setBody(messageBody);
                     message = messageService.send(message);
-                    if (message != null) {
-                        RedirectView redirectToSentMessage = new RedirectView();
-                        redirectToSentMessage.setContextRelative(true);
-                        redirectToSentMessage.setUrl("/message/" + message.getId());
-                        return redirectToSentMessage;
-                    }
+                    return "redirect:/message/" + message.getId();
                 }
             }
-            return new RedirectView("/messageCreateError");
+            return "redirect:/messageCreateError";
         }
-        return new RedirectView("/");
+        return "redirect:/login";
     }
-
-
 }

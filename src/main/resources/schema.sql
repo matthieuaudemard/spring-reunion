@@ -27,6 +27,6 @@ CREATE TABLE IF NOT EXISTS COMMENT
     sender_id    BIGINT   NOT NULL,
     message_id   BIGINT   NOT NULL,
     body         VARCHAR(1000),
-    FOREIGN KEY (message_id) REFERENCES MESSAGE (id),
-    FOREIGN KEY (sender_id) REFERENCES USER (id),
+    FOREIGN KEY (message_id) REFERENCES MESSAGE (id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES USER (id) ON DELETE SET NULL,
 );

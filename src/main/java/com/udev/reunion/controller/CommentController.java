@@ -13,11 +13,11 @@ import com.udev.reunion.util.Convertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -38,13 +38,13 @@ public class CommentController {
     }
 
     @GetMapping(value = "/comments/{messageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getLastMessages(ModelMap model, @PathVariable Long messageId) {
-        model.addAttribute("comments", map(commentService.getCommentByMessageId(messageId)));
-        return "message";
-    }
-
-    private List<CommentJson> map(List<Comment> messages) {
-        return messages.stream()
+    @ResponseBody
+    public List<CommentJson> getLastMessages(HttpServletRequest request, @PathVariable Long messageId) {
+        if (request.getSession().getAttribute("user") == null) {
+            return Collections.emptyList();
+        }
+        return commentService.getCommentByMessageId(messageId)
+                .stream()
                 .map(Convertor::convert)
                 .collect(toList());
     }

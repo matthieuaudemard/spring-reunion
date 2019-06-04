@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getUserById(HttpServletRequest request, ModelMap model, @PathVariable Long userId) {
+    public String userDisplay(HttpServletRequest request, ModelMap model, @PathVariable Long userId) {
         UserJson userSessionJson = (UserJson) request.getSession().getAttribute("user");
         if (userSessionJson != null) {
             User sessionUser = userService.findById(userSessionJson.getId());
@@ -48,12 +48,12 @@ public class UserController {
                 return "user";
             }
         }
-        return "login";
+        return "redirect:/login";
     }
 
     @GetMapping(value = "/user/search/{pattern}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List<UserJson> userSearch(@PathVariable String pattern, HttpServletRequest request) {
+    @ResponseBody
+    public List<UserJson> userSearch(@PathVariable String pattern, HttpServletRequest request) {
         if (request.getSession().getAttribute("user") != null) {
             return userService.findByPattern(pattern)
                     .stream()

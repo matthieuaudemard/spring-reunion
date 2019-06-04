@@ -9,7 +9,10 @@
 
     <!--- \\\\\\\Post-->
     <div class="card gedf-card">
-        <div th:replace="fragments/message_card :: article"></div>
+        <article>
+            <div th:replace="fragments/message_card :: div.card-header"></div>
+            <div th:replace="fragments/message_card :: div.card-body"></div>
+        </article>
     </div>
     <!-- Post /////-->
 
