@@ -52,8 +52,10 @@ public class CommentController {
     @PostMapping(value = "/comment/add")
     public RedirectView commentSubmit(HttpServletRequest request, @ModelAttribute CommentJson commentJson) {
 
-        User user = userService.findById(((UserJson) request.getSession().getAttribute("user")).getId());
-        Message message = messageService.getMessageById(commentJson.getMessageId());
+        final UserJson userJsonSession = (UserJson) request.getSession().getAttribute("user");
+        User user = userService.findById(userJsonSession.getId());
+        Message message = commentJson.getMessageId() != null ?
+                messageService.getMessageById(commentJson.getMessageId()) : null;
 
         if (user != null && message != null) {
             Comment comment = new Comment();
@@ -61,10 +63,10 @@ public class CommentController {
             comment.setSender(user);
             comment.setBody(commentJson.getCommentBody());
             commentService.send(comment);
-            RedirectView rv = new RedirectView();
-            rv.setContextRelative(true);
-            rv.setUrl("/message/" + message.getId());
-            return rv;
+            RedirectView redirectView = new RedirectView();
+            redirectView.setContextRelative(true);
+            redirectView.setUrl("/message/" + message.getId());
+            return redirectView;
         }
         return new RedirectView("/messageCreateError");
     }

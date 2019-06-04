@@ -65,7 +65,7 @@ public class MessageController {
             if (messageById != null) {
                 MessageJson messageJson = Convertor.convert(messageById);
                 messageJson.setCommentJsonList(commentService.getCommentByMessageId(id).stream().map(Convertor::convert).collect(toList()));
-                model.addAttribute("singleMessage", messageJson);
+                model.addAttribute("message", messageJson);
                 return "message";
             } else {
                 return "messageError";
@@ -75,9 +75,9 @@ public class MessageController {
     }
 
     @GetMapping(value = "/delete/{id}")
-    public RedirectView deleteMessage(HttpServletRequest request, @PathVariable Long id){
+    public RedirectView deleteMessage(HttpServletRequest request, @PathVariable Long id) {
         UserJson user = (UserJson) request.getSession().getAttribute("user");
-        if(user != null){
+        if (user != null) {
             this.messageService.delete(id);
         }
         return new RedirectView("/");

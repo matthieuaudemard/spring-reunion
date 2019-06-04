@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/main_layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Error</title>
+    <title>Spring Boot Thymeleaf + Spring Security</title>
 </head>
 <body>
+<div layout:fragment="content" class="col-md-6 gedf-main">
 
-    <h1>The data is corrupted, unable to access your query</h1>
+    <!--- \\\\\\\Post-->
+    <div class="card gedf-card">
+        <h3 style="text-align: center">The data is corrupted, unable to access your query.</h3>
+    </div>
+    <!-- Post /////-->
+</div>
 
 </body>
 </html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<body>
+<article>
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="mr-2">
+                    <img alt="" class="rounded-circle" src="https://picsum.photos/50/50" width="45">
+                </div>
+                <div class="ml-2">
+                    <div class="h5 m-0">
+                        <a th:href="@{/user/{id}(id=${message.getSender().getId()})}"
+                           th:text="'@' + ${message.getSender().getLastname() + message.getSender().getFirstname()}"></a>
+                        <a th:if="${session.user.id} == ${message.getSender().getId()}"
+                           style="position:absolute; top: 10px; right: 20px;"
+                           th:href="@{/delete/{id}(id=${message.getMessageId()})}"><i
+                                class="fa fa-trash"></i></a>
+                    </div>
+                    <p class="text-muted small" th:text="${message.getSender().getAbout()}"></p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="card-body">
+        <div class="text-muted h7 mb-2"><i class="fa fa-clock-o"></i><span
+                th:text="${#dates.format(message.getPublicationDate(), 'dd-MM-yyyy HH:mm')}"> Field</span>
+        </div>
+        <a class="card-link" th:href="@{/message/{id}(id=${message.getMessageId()})}">
+            <h5 class="card-title" th:text="${message.getMessageTitle()}"></h5>
+        </a>
+
+        <p class="card-text" th:text="${message.getMessageBody()}">
+        </p>
+    </div>
+    <div class="card-footer">
+        <a class="card-link" th:href="@{/message/{id}(id=${message.getMessageId()})}"><i
+                class="fa fa-comment"></i> Comment</a>
+    </div>
+
+</article>
+</body>
+</html>

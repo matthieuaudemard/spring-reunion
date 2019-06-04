@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="fragments/head :: head">
+</head>
+<body>
+<nav th:replace="fragments/nav :: nav">
+</nav>
+
+
+<div class="container-fluid gedf-wrapper">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="h5">
+                        <a th:href="@{/user/{id}(id=${session.user.getId()})}"
+                           th:text="'@' + ${session.user.getLogin()}"></a>
+                    </div>
+                    <div class="mr-2 text-center">
+                        <img alt="" class="rounded-circle shadow p-1 mb-2 bg-white rounded"
+                             src="https://picsum.photos/200/200" width="200">
+                    </div>
+                    <br>
+                    <div class="h7 text-muted"
+                         th:text="${session.user.getFirstname() + ' ' + session.user.getLastname()}">Fullname :
+                    </div>
+                    <div class="h7" th:text="${session.user.getAbout()}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div layout:fragment="content"></div>
+
+        <div class="col-md-3">
+            <div class="card gedf-card">
+                <div class="card-body">
+                    <h5 class="card-title">News 1</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                        the
+                        card's content.</p>
+
+                </div>
+            </div>
+            <div class="card gedf-card">
+                <div class="card-body">
+                    <h5 class="card-title">News 2</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                        the
+                        card's content.</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        $(document).ready(function () {
+            $("#search").on("keyup", function () {
+                var matchvalue = $(this).val();
+                var cList = $('ul#userFoundList');
+                cList.empty();
+                cList.css("display", "none");
+                if (matchvalue.length <= 2) {
+                    exit();
+                }
+                $.ajax({
+                    url: '/user/search/' + matchvalue,
+                    type: 'get'
+                }).done(function (userList) {
+                    var cList = $('ul#userFoundList');
+                    cList.empty();
+                    if (Object.keys(userList).length == 0) {
+                        cList.css("display", "none");
+                    } else {
+                        cList.css("display", "block");
+                    }
+                    userList.forEach(function (user) {
+                        console.log('user :' + user.id);
+                        cList.append('<li style="background: white; display: block;"><a href="/user/' + user.id + '">' + user.lastname + ' ' + user.firstname + '(@' + user.login + ')' + '</a></li>');
+
+                    });
+                });
+            }).fail(function () {
+                var cList = $('ul#userFoundList');
+                cList.empty();
+                cList.css("display", "none");
+            });
+            $("#search").on("keydown", function () {
+                var cList = $('ul#userFoundList');
+                cList.empty();
+                cList.css("display", "none");
+                console.log("down");
+            })
+        });
+
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>
