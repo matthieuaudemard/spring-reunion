@@ -59,45 +59,74 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
 
-        $(document).ready(function () {
-            $("#search").on("keyup", function () {
-                var matchvalue = $(this).val();
-                var cList = $('ul#userFoundList');
-                cList.empty();
-                cList.css("display", "none");
-                if (matchvalue.length <= 2) {
-                    exit();
-                }
+        function user_search() {
+            var matchvalue = $("#search").val();
+            var cList = $('div#userFoundList');
+            cList.empty();
+            cList.css("display", "none");
+            if (matchvalue.length > 2) {
                 $.ajax({
                     url: '/user/search/' + matchvalue,
                     type: 'get'
                 }).done(function (userList) {
-                    var cList = $('ul#userFoundList');
-                    cList.empty();
-                    if (Object.keys(userList).length == 0) {
-                        cList.css("display", "none");
-                    } else {
-                        cList.css("display", "block");
-                    }
+                    var cList = $('div#userFoundList');
+                    var container = cList.last();
+                    container.empty();
+                    cList.css("display", "block");
+                    container.append("<hgroup class=\"mb20\">\n" +
+                        "                <h1>Search Results</h1>\n" +
+                        "                <h2 class=\"lead\"><strong class=\"text-danger\">" + Object.keys(userList).length + "</strong> results were found for the search for <strong class=\"text-danger\">" + matchvalue + "</strong></h2>\n" +
+                        "            </hgroup>");
+                    var html = "<section class=\"col-xs-12 col-sm-6 col-md-12\">";
                     userList.forEach(function (user) {
-                        console.log('user :' + user.id);
-                        cList.append('<li style="background: white; display: block;"><a href="/user/' + user.id + '">' + user.lastname + ' ' + user.firstname + '(@' + user.login + ')' + '</a></li>');
-
+                        html += "<article class=\"d-flex align-items-left\">\n" +
+                            "        <div class=\"mr-2\">\n" +
+                            "            <img class=\"rounded-circle\" src=\"https://picsum.photos/50/50\" width=\"45\">\n" +
+                            "        </div>\n" +
+                            "       <div class=\"ml-2\">\n" +
+                            "            <div class=\"h5 m-0\"><a href=\"/user/" + user.id + "\">" + user.lastname + " " + user.firstname + " (@" + user.login + ")</a></div>\n" +
+                            "            <p class=\"text-muted small\">" + user.about + "</p>\n" +
+                            "       </div>\n" +
+                            "        <span class=\"clearfix borda\"></span>\n" +
+                            "    </article>\n"
                     });
+                    html += "</section>";
+                    container.append(html);
+                }).fail(function () {
+                    var cList = $('div#userFoundList');
+                    var container = cList.last();
+                    container.empty();
+                    cList.css("display", "none");
                 });
-            }).fail(function () {
-                var cList = $('ul#userFoundList');
-                cList.empty();
-                cList.css("display", "none");
-            });
-            $("#search").on("keydown", function () {
-                var cList = $('ul#userFoundList');
-                cList.empty();
-                cList.css("display", "none");
-                console.log("down");
-            })
-        });
+            }
+        }
 
+        $(document).ready(function () {
+            $("button.close").each(function (button) {
+                button.on("click", function () {
+                    $('div#userFoundList').css("display", "none");
+                });
+            });
+            $(this).click(function (event) {
+                if (event.target.id != "search") {
+                    $('div#userFoundList').css("display", "none");
+                }
+            });
+            $("#search").on({
+                keyup: function () {
+                    user_search();
+                },
+                focus: function () {
+                    user_search();
+                },
+                keydown: function () {
+                    var cList = $('div#userFoundList');
+                    var container = cList.last();
+                    container.empty();
+                    cList.css("display", "none");
+                }
+            });
+        });
         /*]]>*/
     </script>
 </div>
