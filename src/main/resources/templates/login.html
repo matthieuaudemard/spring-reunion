@@ -21,7 +21,7 @@
         </div>
 
         <!-- Login Form -->
-        <form method="post" action="/login" th:object="${userForm}">
+        <form method="post" action="/login" th:object="${signinForm}">
             <input type="text" id="login" class="fadeIn second" name="login" placeholder="login" minlength="1"
                    maxlength="49" th:field="*{login}">
             <input type="password" id="password" class="fadeIn third" name="password" placeholder="password"
@@ -47,7 +47,7 @@
         </div>
 
         <!-- Login Form -->
-        <form method="post" action="/register" th:object="${userForm}">
+        <form method="post" action="/register" th:object="${signupForm}">
             <input type="text" id="login2" class="fadeIn second" name="login" placeholder="login" minlength="1"
                    maxlength="49" th:field="*{login}">
             <input type="text" id="fname" class="fadeIn second" name="fname" placeholder="first name" minlength="1"
@@ -55,7 +55,7 @@
             <input type="text" id="lname" class="fadeIn second" name="lname" placeholder="last name" minlength="1"
                    maxlength="49" th:field="*{lastname}">
             <input type="password" id="password2" class="fadeIn third" name="password" placeholder="password"
-                   minlength="1" maxlength="49">
+                   minlength="1" maxlength="49" th:field="*{password}">
             <input type="submit" class="fadeIn fourth" value="Create">
         </form>
 

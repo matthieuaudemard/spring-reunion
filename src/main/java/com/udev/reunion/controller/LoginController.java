@@ -1,13 +1,18 @@
 package com.udev.reunion.controller;
 
 import com.udev.reunion.domain.User;
-import com.udev.reunion.model.UserJson;
+import com.udev.reunion.form.SigninForm;
+import com.udev.reunion.form.SignupForm;
 import com.udev.reunion.service.UserService;
 import com.udev.reunion.util.Convertor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,11 +28,11 @@ public class LoginController {
     }
 
     @PostMapping(value = "/login")
-    public String loginSubmit(HttpServletRequest request, @RequestParam(value = "password") String password, @ModelAttribute UserJson userJson) {
-        if (!userJson.getLogin().isEmpty() && !password.isEmpty()) {
-            User user = userService.findByLogin(userJson.getLogin());
-            if (user != null && user.getPassword().equals(password)) {
-                request.getSession().setAttribute("user", Convertor.convert(user));
+    public String loginSubmit(HttpServletRequest request, @ModelAttribute SigninForm form) {
+        if (!StringUtils.isEmpty(form.getLogin()) && !StringUtils.isEmpty(form.getPassword())) {
+            User user = userService.findByLogin(form.getLogin());
+            if (user != null && form.getPassword().equals(user.getPassword())) {
+                request.getSession().setAttribute("user", Convertor.convertToDto(user));
                 return "redirect:/";
             }
         }
@@ -39,7 +44,8 @@ public class LoginController {
         if (request.getSession().getAttribute("user") != null) {
             return "redirect:/";
         }
-        model.addAttribute("userForm", new UserJson());
+        model.addAttribute("signinForm", new SigninForm());
+        model.addAttribute("signupForm", new SignupForm());
         return "login";
     }
 
@@ -51,15 +57,15 @@ public class LoginController {
 
 
     @PostMapping(value = "/register")
-    public String registerSubmit(HttpServletRequest request, @ModelAttribute UserJson userJson,
-                                 @RequestParam(value = "password") String password) {
-        String login = userJson.getLogin();
-        String fname = userJson.getFirstname();
-        String lname = userJson.getLastname();
-        if (!login.isEmpty() && login.length() < 50 &&
-                !fname.isEmpty() && fname.length() < 50 &&
-                !lname.isEmpty() && lname.length() < 50 &&
-                !password.isEmpty() && password.length() < 50) {
+    public String registerSubmit(HttpServletRequest request, @ModelAttribute SignupForm form) {
+        String login = form.getLogin();
+        String fname = form.getFirstname();
+        String lname = form.getLastname();
+        String password = form.getPassword();
+        if (!StringUtils.isEmpty(login) && login.length() < 50 &&
+                !StringUtils.isEmpty(fname) && fname.length() < 50 &&
+                !StringUtils.isEmpty(lname) && lname.length() < 50 &&
+                !StringUtils.isEmpty(password) && password.length() < 50) {
             User user = new User();
             user.setLogin(login);
             user.setFirstname(fname);
@@ -67,10 +73,10 @@ public class LoginController {
             user.setPassword(password);
 
             try {
-                request.getSession().setAttribute("user", Convertor.convert(userService.send(user)));
+                request.getSession().setAttribute("user", Convertor.convertToDto(userService.send(user)));
                 return "redirect:/";
             } catch (Exception e) {
-                // ne rien faire
+                // Si l'inscription échoue, ne rien faire. On passe alors par la redirection suivante.
             }
         }
         return "redirect:/login";

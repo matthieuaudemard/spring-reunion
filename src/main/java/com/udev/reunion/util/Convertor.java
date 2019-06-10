@@ -3,9 +3,9 @@ package com.udev.reunion.util;
 import com.udev.reunion.domain.Comment;
 import com.udev.reunion.domain.Message;
 import com.udev.reunion.domain.User;
-import com.udev.reunion.model.CommentJson;
-import com.udev.reunion.model.MessageJson;
-import com.udev.reunion.model.UserJson;
+import com.udev.reunion.dto.CommentDto;
+import com.udev.reunion.dto.MessageDto;
+import com.udev.reunion.dto.UserDto;
 
 public class Convertor {
 
@@ -13,10 +13,10 @@ public class Convertor {
         // Empeche la création d'une instance de la classe Convertor
     }
 
-    public static MessageJson convert(Message message) {
+    public static MessageDto convertToDto(Message message) {
         final User sender = message.getSender();
-        MessageJson json = new MessageJson();
-        json.setSender(Convertor.convert(sender));
+        MessageDto json = new MessageDto();
+        json.setSender(Convertor.convertToDto(sender));
         json.setMessageId(message.getId());
         json.setMessageTitle(message.getTitle());
         json.setMessageBody(message.getBody());
@@ -24,11 +24,11 @@ public class Convertor {
         return json;
     }
 
-    public static CommentJson convert(Comment comment) {
+    public static CommentDto convertToDto(Comment comment) {
         final User sender = comment.getSender();
         final Message message = comment.getMessage();
-        CommentJson json = new CommentJson();
-        json.setSender(Convertor.convert(sender));
+        CommentDto json = new CommentDto();
+        json.setSender(Convertor.convertToDto(sender));
         json.setMessageId(message.getId());
         json.setCommentId(comment.getId());
         json.setCommentBody(comment.getBody());
@@ -36,8 +36,8 @@ public class Convertor {
         return json;
     }
 
-    public static UserJson convert(User user) {
-        UserJson json = new UserJson();
+    public static UserDto convertToDto(User user) {
+        UserDto json = new UserDto();
         json.setId(user.getId());
         json.setLogin(user.getLogin());
         json.setFirstname(user.getFirstname());

@@ -1,11 +1,11 @@
-package com.udev.reunion.model;
+package com.udev.reunion.dto;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class UserJson implements Serializable {
+public class UserDto implements Serializable {
 
     private Long id;
     private String login;
@@ -13,7 +13,7 @@ public class UserJson implements Serializable {
     private String lastname;
     private String about;
 
-    public UserJson() {
+    public UserDto() {
         // Constructeur par défaut
     }
 }

@@ -1,4 +1,4 @@
-package com.udev.reunion.model;
+package com.udev.reunion.dto;
 
 import lombok.Data;
 
@@ -6,16 +6,16 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class MessageJson {
+public class MessageDto {
 
-    private UserJson sender;
+    private UserDto sender;
     private Long messageId;
     private String messageTitle;
     private String messageBody;
     private Date publicationDate;
-    private List<CommentJson> commentJsonList;
+    private List<CommentDto> commentJsonList;
 
-    public MessageJson() {
+    public MessageDto() {
         // Constructeur par défaut
     }
 }

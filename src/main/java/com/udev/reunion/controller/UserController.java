@@ -2,8 +2,8 @@ package com.udev.reunion.controller;
 
 import com.udev.reunion.domain.Message;
 import com.udev.reunion.domain.User;
-import com.udev.reunion.model.MessageJson;
-import com.udev.reunion.model.UserJson;
+import com.udev.reunion.dto.MessageDto;
+import com.udev.reunion.dto.UserDto;
 import com.udev.reunion.service.MessageService;
 import com.udev.reunion.service.UserService;
 import com.udev.reunion.util.Convertor;
@@ -37,13 +37,13 @@ public class UserController {
 
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String userDisplay(HttpServletRequest request, ModelMap model, @PathVariable Long userId) {
-        UserJson userSessionJson = (UserJson) request.getSession().getAttribute("user");
+        UserDto userSessionJson = (UserDto) request.getSession().getAttribute("user");
         if (userSessionJson != null) {
             User sessionUser = userService.findById(userSessionJson.getId());
             User userById = userService.findById(userId);
             if (sessionUser != null) {
-                UserJson userJson = Convertor.convert(userById);
-                model.addAttribute("user", userJson);
+                UserDto userDto = Convertor.convertToDto(userById);
+                model.addAttribute("user", userDto);
                 model.addAttribute("messages", map(messageService.getUserMessages(userId)));
                 return "user";
             }
@@ -53,19 +53,19 @@ public class UserController {
 
     @GetMapping(value = "/user/search/{pattern}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<UserJson> userSearch(@PathVariable String pattern, HttpServletRequest request) {
+    public List<UserDto> userSearch(@PathVariable String pattern, HttpServletRequest request) {
         if (request.getSession().getAttribute("user") != null) {
             return userService.findByPattern(pattern)
                     .stream()
-                    .map(Convertor::convert)
+                    .map(Convertor::convertToDto)
                     .collect(toList());
         }
         return Collections.emptyList();
     }
 
-    private List<MessageJson> map(List<Message> messages) {
+    private List<MessageDto> map(List<Message> messages) {
         return messages.stream()
-                .map(Convertor::convert)
+                .map(Convertor::convertToDto)
                 .collect(toList());
     }
 }

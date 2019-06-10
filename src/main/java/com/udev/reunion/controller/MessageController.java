@@ -2,9 +2,10 @@ package com.udev.reunion.controller;
 
 import com.udev.reunion.domain.Message;
 import com.udev.reunion.domain.User;
-import com.udev.reunion.model.CommentJson;
-import com.udev.reunion.model.MessageJson;
-import com.udev.reunion.model.UserJson;
+import com.udev.reunion.dto.MessageDto;
+import com.udev.reunion.dto.UserDto;
+import com.udev.reunion.form.CommentForm;
+import com.udev.reunion.form.MessageForm;
 import com.udev.reunion.service.CommentService;
 import com.udev.reunion.service.MessageService;
 import com.udev.reunion.service.UserService;
@@ -43,11 +44,9 @@ public class MessageController {
 
     @GetMapping(value = {"/", "/last"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getLastMessages(ModelMap model, HttpServletRequest request) {
-        UserJson user = (UserJson) request.getSession().getAttribute("user");
+        UserDto user = (UserDto) request.getSession().getAttribute("user");
         if (user != null) {
-            MessageJson messageForm = new MessageJson();
-            messageForm.setSender(user);
-            model.addAttribute("messageForm", messageForm);
+            model.addAttribute("messageForm", new MessageForm());
             model.addAttribute("messages", map(messageService.getLastMessages()));
             return "home";
         } else {
@@ -58,22 +57,21 @@ public class MessageController {
 
     @GetMapping(value = "/message/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getMessageById(ModelMap model, @PathVariable Long id, HttpServletRequest request) {
-        UserJson user = (UserJson) request.getSession().getAttribute("user");
+        UserDto user = (UserDto) request.getSession().getAttribute("user");
         if (user != null) {
             Message messageById = messageService.getMessageById(id);
-            CommentJson commentForm = new CommentJson();
-            commentForm.setSender(user);
+            CommentForm commentForm = new CommentForm();
             commentForm.setMessageId(id);
             model.addAttribute("commentForm", commentForm);
             if (messageById != null) {
-                MessageJson messageJson = Convertor.convert(messageById);
-                messageJson.setCommentJsonList(
+                MessageDto messageDto = Convertor.convertToDto(messageById);
+                messageDto.setCommentJsonList(
                         commentService.getCommentByMessageId(id)
                                 .stream()
-                                .map(Convertor::convert)
+                                .map(Convertor::convertToDto)
                                 .collect(toList())
                 );
-                model.addAttribute("message", messageJson);
+                model.addAttribute("message", messageDto);
                 return "message";
             } else {
                 return "messageError";
@@ -84,28 +82,28 @@ public class MessageController {
 
     @GetMapping(value = "/delete/{id}")
     public String deleteMessage(HttpServletRequest request, @PathVariable Long id) {
-        UserJson user = (UserJson) request.getSession().getAttribute("user");
+        UserDto user = (UserDto) request.getSession().getAttribute("user");
         if (user != null) {
             this.messageService.delete(id);
         }
         return "redirect:/";
     }
 
-    private List<MessageJson> map(List<Message> messages) {
+    private List<MessageDto> map(List<Message> messages) {
         return messages.stream()
-                .map(Convertor::convert)
+                .map(Convertor::convertToDto)
                 .collect(toList());
     }
 
     @PostMapping(value = "/create_message")
-    public String messageSubmit(HttpServletRequest request, @ModelAttribute MessageJson messageJson) {
-        UserJson userJsonSession = (UserJson) request.getSession().getAttribute("user");
-        if (userJsonSession != null) {
-            String messageTitle = messageJson.getMessageTitle();
-            String messageBody = messageJson.getMessageBody();
+    public String messageSubmit(HttpServletRequest request, @ModelAttribute MessageForm form) {
+        UserDto userDtoSession = (UserDto) request.getSession().getAttribute("user");
+        if (userDtoSession != null) {
+            String messageTitle = form.getMessageTitle();
+            String messageBody = form.getMessageBody();
             if (messageTitle.length() > 0 && messageTitle.length() < 100 &&
                     messageBody.length() > 0 && messageBody.length() < 1000) {
-                User user = userService.findById(userJsonSession.getId());
+                User user = userService.findById(userDtoSession.getId());
                 if (user != null) {
                     Message message = new Message();
                     message.setSender(user);
